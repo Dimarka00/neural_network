@@ -15,9 +15,7 @@ def dog_cat_predict(model, image_file):
     predicted_class_index = int(np.round(predictions[0][0]))
     predicted_class = label_names[predicted_class_index]
 
-    confidence_percentage = predictions[0][0] * 100  # Переводим вероятность в проценты
-
-    return predicted_class, confidence_percentage
+    return predicted_class
 
 
 def predict_images_in_folder(model, folder_path):
@@ -27,8 +25,8 @@ def predict_images_in_folder(model, folder_path):
     for file_name in files:
         if file_name.endswith('.png') or file_name.endswith('.jpg'):
             image_path = os.path.join(folder_path, file_name)
-            prediction, confidence = dog_cat_predict(model, image_path)
-            print(f'File: {file_name}, Prediction: {prediction}, Confidence: {confidence:.2f}%')
+            prediction = dog_cat_predict(model, image_path)
+            print(f'File: {file_name}, Prediction: {prediction}')
 
 
 model_path = 'dogs_cats_trained.h5'
