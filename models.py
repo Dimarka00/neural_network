@@ -12,5 +12,5 @@ def dog_cat_model():
     model.add(Flatten())
     model.add(Dense(units=128, activation='relu'))
     model.add(Dense(units=1, activation='sigmoid'))
-    model.compile(optimizer=Adam(), loss='binary_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer=Adam(learning_rate=0.0001), loss='binary_crossentropy', metrics=['accuracy'])
     return model
