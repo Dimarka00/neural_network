@@ -1,5 +1,3 @@
-import time
-
 import tensorflow as tf
 import tensorflow_datasets as tfds
 
@@ -23,23 +21,22 @@ def dog_cat_train_augmented(model):
     batch_size = 32
     shuffle_buffer_size = 1000
 
-    data_augmentation = Sequential([
-        RandomFlip('horizontal'),
-        RandomRotation(0.2),
-        RandomZoom(0.2),
+    data_augmentation = tf.keras.Sequential([
+        tf.keras.layers.experimental.preprocessing.RandomFlip('horizontal'),
+        tf.keras.layers.experimental.preprocessing.RandomRotation(0.2),
+        tf.keras.layers.experimental.preprocessing.RandomZoom(0.2),
     ])
 
     train_data = cat_train.map(pre_process_image)
     train_data = train_data.map(lambda image, label: (data_augmentation(image), label))
+    train_data = train_data.shuffle(shuffle_buffer_size).batch(batch_size).repeat().prefetch(buffer_size=tf.data.AUTOTUNE)
 
-    train_data = train_data.shuffle(shuffle_buffer_size).batch(batch_size).prefetch(buffer_size=tf.data.AUTOTUNE)
     validation_data = cat_valid.map(pre_process_image).batch(batch_size)
 
-    t_start = time.time()
+    # Обучение модели на 5 эпохах
     model.fit(train_data, epochs=5, validation_data=validation_data,
               steps_per_epoch=len(cat_train) // batch_size,
-              validation_steps=len(cat_valid) // batch_size, callbacks=None)
-    print("Training done, dT:", time.time() - t_start)
+              validation_steps=len(cat_valid) // batch_size)
     return model
 
 
